@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.18] - 2026-01-14
+
+### Changed
+- Sidebar icon changed to mdi:brain
+
+### Fixed
+- Persist both ~/.claude and ~/.config/claude-code directories
+- Ensures all Claude Code auth and config survives restarts
+
 ## [1.2.17] - 2026-01-14
 
 ### Fixed

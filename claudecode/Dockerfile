@@ -77,9 +77,11 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
 # Startup script that reads config and persists Claude auth
 ENTRYPOINT []
 CMD ["/bin/bash", "-c", "\
-  mkdir -p /data/claude && \
-  rm -rf /root/.claude && \
+  mkdir -p /data/claude /data/claude-config && \
+  rm -rf /root/.claude /root/.config/claude-code && \
+  mkdir -p /root/.config && \
   ln -sf /data/claude /root/.claude && \
+  ln -sf /data/claude-config /root/.config/claude-code && \
   FONT_SIZE=$(jq -r '.terminal_font_size // 14' /data/options.json) && \
   THEME=$(jq -r '.terminal_theme // \"dark\"' /data/options.json) && \
   PERSIST=$(jq -r '.session_persistence // true' /data/options.json) && \
