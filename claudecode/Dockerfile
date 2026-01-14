@@ -22,8 +22,6 @@ RUN apk add --no-cache \
     jq \
     nodejs \
     npm \
-    python3 \
-    py3-pip \
     openssh-client \
     libstdc++ \
     ncurses \
@@ -44,8 +42,8 @@ RUN apk add --no-cache \
 # Install Claude Code via npm
 RUN npm install -g @anthropic-ai/claude-code
 
-# Install hass-mcp for Home Assistant integration (requires Python 3.13+)
-RUN pip3 install --no-cache-dir --break-system-packages hass-mcp
+# Install hass-mcp for Home Assistant integration
+RUN pip install --no-cache-dir hass-mcp
 
 # Create necessary directories
 RUN mkdir -p \
@@ -61,8 +59,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 # Copy run script and ensure it's executable with correct line endings
 COPY run.sh /run.sh
 RUN chmod 755 /run.sh && \
-    sed -i 's/\r$//' /run.sh && \
-    head -1 /run.sh
+    sed -i 's/\r$//' /run.sh
 
 # Set working directory
 WORKDIR /homeassistant
@@ -71,6 +68,4 @@ WORKDIR /homeassistant
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD curl -sf http://localhost:7681/ || exit 1
 
-# Override base image entrypoint completely
-ENTRYPOINT ["/bin/bash"]
 CMD ["/run.sh"]

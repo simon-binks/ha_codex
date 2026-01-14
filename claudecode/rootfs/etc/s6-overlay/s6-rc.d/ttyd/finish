@@ -1,7 +1,0 @@
-#!/command/with-contenv bashio
-# shellcheck shell=bash
-
-bashio::log.info "ttyd service stopped with exit code: ${1}"
-
-# Give time before restart
-sleep 2
