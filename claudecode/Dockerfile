@@ -97,11 +97,11 @@ CMD ["/bin/bash", "-c", "\
   THEME=$(jq -r '.terminal_theme // \"dark\"' /data/options.json) && \
   SESSION_PERSIST=$(jq -r '.session_persistence // true' /data/options.json) && \
   ENABLE_MCP=$(jq -r '.enable_mcp // true' /data/options.json) && \
+  claude mcp remove homeassistant 2>/dev/null || true && \
   if [ \"$ENABLE_MCP\" = \"true\" ]; then \
-    echo '{\"mcpServers\":{\"homeassistant\":{\"command\":\"hass-mcp\",\"env\":{\"HASS_TOKEN\":\"'\"$SUPERVISOR_TOKEN\"'\",\"HASS_HOST\":\"http://supervisor/core\"}}}}' > /root/.claude/settings.json; \
+    claude mcp add-json homeassistant '{\"command\":\"hass-mcp\",\"env\":{\"HASS_TOKEN\":\"'\"$SUPERVISOR_TOKEN\"'\",\"HASS_HOST\":\"http://supervisor/core\"}}' && \
     echo '[INFO] MCP configured with Home Assistant integration'; \
   else \
-    echo '{}' > /root/.claude/settings.json; \
     echo '[INFO] MCP disabled'; \
   fi && \
   if [ \"$THEME\" = \"dark\" ]; then \

@@ -114,8 +114,18 @@ If you're new to tmux:
 | `Ctrl+b [` | Enter scroll/copy mode (use arrow keys) |
 | Mouse wheel | Scroll up/down (auto-enters copy mode) |
 | `q` | Exit scroll/copy mode |
-| Middle-click | Paste from clipboard |
-| `Shift+Insert` | Paste from clipboard (alternative) |
+
+### Copy and Paste in tmux
+
+Since tmux captures mouse events, copy/paste works differently:
+
+| Action | How to do it |
+|--------|--------------|
+| **Copy** | Hold `Ctrl+Shift` while selecting text with mouse |
+| **Paste** | `Shift+Insert` or middle-click |
+| **Alternative paste** | `Ctrl+Shift+V` (browser dependent) |
+
+**Note**: Regular right-click paste and simple mouse selection won't work because tmux intercepts these events for scrolling.
 
 ### Scrolling and Session Persistence Trade-offs
 

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.26] - 2026-01-14
+
+### Fixed
+- MCP now configured using `claude mcp add-json` command (proper Claude Code API)
+- Previous settings.json approach was not recognized by Claude Code
+
+### Documentation
+- Added detailed copy/paste instructions for tmux mode (Ctrl+Shift to select, Shift+Insert to paste)
+
 ## [1.2.25] - 2026-01-14
 
 ### Fixed
