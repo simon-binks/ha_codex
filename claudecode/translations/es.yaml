@@ -5,6 +5,13 @@ configuration:
       Habilita el servidor MCP de Home Assistant para interacción directa con
       entidades y servicios desde Claude Code. Permite que Claude consulte
       estados, llame servicios e interactúe con tu hogar inteligente.
+  enable_playwright_mcp:
+    name: Habilitar MCP Playwright
+    description: >-
+      Habilita el servidor MCP Playwright para automatización del navegador. Permite
+      que Claude navegue páginas web, complete formularios, haga clic en elementos
+      y tome capturas de pantalla usando Chromium headless. Deshabilitado por defecto
+      debido al mayor uso de recursos.
   terminal_font_size:
     name: Tamaño de Fuente del Terminal
     description: >-

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.44] - 2026-01-14
+
+### Added
+- Playwright MCP server for browser automation (opt-in via `enable_playwright_mcp`)
+- Headless Chromium browser pre-installed
+- Allows Claude to navigate web pages, fill forms, click elements, and take screenshots
+
 ## [1.2.43] - 2026-01-14
 
 ### Changed

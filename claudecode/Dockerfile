@@ -38,6 +38,20 @@ RUN apk add --no-cache \
     ripgrep \
     && update-ca-certificates
 
+# Install Chromium and dependencies for Playwright
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ttf-freefont \
+    font-noto-emoji \
+    && rm -rf /var/cache/apk/*
+
+# Set Playwright to use system Chromium
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+ENV PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
 # Install ttyd static binary (avoids libwebsockets issues)
 ARG BUILD_ARCH
 RUN case "${BUILD_ARCH}" in \
@@ -55,6 +69,9 @@ RUN npm install -g @anthropic-ai/claude-code
 
 # Install hass-mcp for Home Assistant integration
 RUN pip3 install --no-cache-dir --break-system-packages hass-mcp
+
+# Install Playwright MCP server (official Microsoft package)
+RUN npm install -g @playwright/mcp
 
 # Install Home Assistant CLI (ha command)
 RUN case "${BUILD_ARCH}" in \
@@ -185,12 +202,14 @@ CMD ["/bin/bash", "-c", "\
   THEME=$(jq -r '.terminal_theme // \"dark\"' /data/options.json) && \
   SESSION_PERSIST=$(jq -r '.session_persistence // true' /data/options.json) && \
   ENABLE_MCP=$(jq -r '.enable_mcp // true' /data/options.json) && \
+  ENABLE_PLAYWRIGHT=$(jq -r '.enable_playwright_mcp // false' /data/options.json) && \
   AUTO_UPDATE=$(jq -r '.auto_update_claude // true' /data/options.json) && \
   if [ \"$AUTO_UPDATE\" = \"true\" ]; then \
     echo '[INFO] Checking for Claude Code updates...' && \
     npm update -g @anthropic-ai/claude-code 2>/dev/null || echo '[WARN] Update check failed, continuing...'; \
   fi && \
   claude mcp remove homeassistant 2>/dev/null || true && \
+  claude mcp remove playwright 2>/dev/null || true && \
   if [ \"$ENABLE_MCP\" = \"true\" ]; then \
     claude mcp add-json homeassistant '{\"command\":\"hass-mcp\"}' && \
     SETTINGS_FILE=/root/.claude/settings.json && \
@@ -200,6 +219,12 @@ CMD ["/bin/bash", "-c", "\
     echo '[INFO] Pre-authorized read-only MCP tools'; \
   else \
     echo '[INFO] MCP disabled'; \
+  fi && \
+  if [ \"$ENABLE_PLAYWRIGHT\" = \"true\" ]; then \
+    claude mcp add-json playwright '{\"command\":\"npx\",\"args\":[\"-y\",\"@playwright/mcp\",\"--headless\",\"--browser\",\"chromium\"],\"env\":{\"PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH\":\"/usr/bin/chromium-browser\"}}' && \
+    echo '[INFO] Playwright MCP enabled (headless Chromium)'; \
+  else \
+    echo '[INFO] Playwright MCP disabled'; \
   fi && \
   if [ \"$THEME\" = \"dark\" ]; then \
     COLORS='background=#1e1e2e,foreground=#cdd6f4,cursor=#f5e0dc'; \
