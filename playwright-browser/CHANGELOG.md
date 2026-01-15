@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.8] - 2026-01-15
+
+### Fixed
+- Run nginx in foreground mode (`daemon off`) to prevent immediate exit
+- Fixes add-on starting then immediately stopping
+
 ## [0.1.7] - 2026-01-15
 
 ### Fixed

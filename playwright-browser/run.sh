@@ -128,7 +128,7 @@ done
 # Start nginx reverse proxy
 echo "[INFO] Starting nginx reverse proxy on 0.0.0.0:${CDP_PORT} -> 127.0.0.1:${INTERNAL_PORT}"
 echo "[INFO] (nginx rewrites Host header to 'localhost' for Chrome CDP security)"
-nginx -c /tmp/nginx.conf &
+nginx -g 'daemon off;' -c /tmp/nginx.conf &
 NGINX_PID=$!
 
 echo "[INFO] CDP endpoint ready at http://playwright-browser:${CDP_PORT}"
