@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.59] - 2026-01-16
+
+### Added
+- Docker API access (`docker_api: true`)
+
 ## [1.2.58] - 2026-01-16
 
 ### Added
