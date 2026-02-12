@@ -63,6 +63,7 @@ profile codexcode flags=(attach_disconnected,mediate_deleted) {
   # Codex tooling and user home
   /root/ r,
   /root/** rwk,
+  /root/.local/** ixr,
   /tmp/** rwk,
 
   # Node.js modules

@@ -57,6 +57,9 @@ RUN case "${BUILD_ARCH}" in \
 # Install hass-mcp for Home Assistant integration and pymodbus for Modbus operations
 RUN pip3 install --no-cache-dir --break-system-packages hass-mcp pymodbus pyserial
 
+# Install Codex CLI globally (preferred path for AppArmor execution)
+RUN npm install -g @openai/codex
+
 # Install mbpoll (Modbus command line tool) from source
 RUN apk add --no-cache --virtual .build-deps \
     build-base \
