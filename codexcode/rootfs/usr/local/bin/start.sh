@@ -31,6 +31,7 @@ When users mention `/config/...`, translate to `/homeassistant/...`.
 ## Home Assistant Integration
 
 Use `hass-mcp` and your client MCP configuration for Home Assistant integration.
+For better performance, prefer domain-focused queries over full entity dumps.
 
 ## Reading Home Assistant Logs
 
@@ -102,14 +103,11 @@ if [ "${ENABLE_MCP}" = "true" ]; then
   if command -v codex >/dev/null 2>&1 && codex mcp list >/dev/null 2>&1; then
     MCP_HA_CWD="${PERSIST_DIR}/mcp/homeassistant"
     mkdir -p "${MCP_HA_CWD}"
-    cat > "${MCP_HA_CWD}/.env" <<EOF
-HA_URL=${HA_URL}
-HA_TOKEN=${HA_TOKEN}
-EOF
-    chmod 600 "${MCP_HA_CWD}/.env"
     cat > "${MCP_HA_CWD}/hass-mcp-launcher.sh" <<EOF
 #!/usr/bin/env bash
 cd "${MCP_HA_CWD}"
+export HA_URL="${HA_URL}"
+export HA_TOKEN="${HA_TOKEN}"
 exec hass-mcp
 EOF
     chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"

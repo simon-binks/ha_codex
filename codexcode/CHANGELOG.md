@@ -2,6 +2,15 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.3.5] - 2026-02-12
+
+### Fixed
+- Home Assistant MCP launcher now exports `HA_URL` and `HA_TOKEN` directly before starting `hass-mcp`.
+- Removed dependency on `.env` file parsing for MCP authentication bootstrap.
+
+### Changed
+- Added startup guidance to prefer domain-focused MCP queries for better performance.
+
 ## [1.3.4] - 2026-02-12
 
 ### Fixed
