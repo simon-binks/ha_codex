@@ -2,6 +2,13 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.3.6] - 2026-02-12
+
+### Changed
+- Added explicit Home Assistant action reliability guidance to startup `CODEX.md`.
+- Documented Codex strict validation behavior for `hass-mcp` action calls in README troubleshooting.
+- Added recommended "write then verify state" workflow for state-changing actions.
+
 ## [1.3.5] - 2026-02-12
 
 ### Fixed

@@ -33,6 +33,15 @@ When users mention `/config/...`, translate to `/homeassistant/...`.
 Use `hass-mcp` and your client MCP configuration for Home Assistant integration.
 For better performance, prefer domain-focused queries over full entity dumps.
 
+## Action Reliability
+
+When executing state-changing actions (turn on/off, set temperature, etc):
+1. Call the action tool once.
+2. Immediately read back the target entity state.
+3. Treat the operation as successful if the readback matches the requested state.
+
+Some MCP action calls may return strict schema/validation errors in Codex even when Home Assistant has already applied the change.
+
 ## Reading Home Assistant Logs
 
 ```bash

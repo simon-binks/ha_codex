@@ -84,6 +84,15 @@ When `session_persistence` is enabled, the add-on uses tmux and attaches to sess
 2. Configure MCP in your chosen CLI/client manually.
 3. Restart the add-on after changing options.
 
+### MCP action reported failed but HA state changed
+
+Some `hass-mcp` action responses can fail strict response validation in Codex even when Home Assistant applied the action successfully.
+
+Workaround:
+1. Ask Codex to verify state after each action.
+2. Use prompts like: `Turn on switch.sad_lamp, then read back its state and confirm success only if it is on.`
+3. Prefer domain-focused queries (`light`, `switch`, `climate`) for faster responses.
+
 ## Support
 
 - [GitHub Issues](https://github.com/robsonfelix/robsonfelix-hass-addons/issues)
