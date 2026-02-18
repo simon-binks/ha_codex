@@ -108,7 +108,7 @@ chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"
 
   # Ensure project_doc_max_bytes is set (AGENTS.md is ~60KB, default limit is 32KB)
   if ! grep -q 'project_doc_max_bytes' "${CONFIG_TOML}" 2>/dev/null; then
-    echo 'project_doc_max_bytes = 65536'
+    echo 'project_doc_max_bytes = "65536"'
   fi
 
   echo ""

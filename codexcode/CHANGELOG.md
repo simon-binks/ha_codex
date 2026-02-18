@@ -2,6 +2,11 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.1] - 2026-02-18
+
+### Fixed
+- `project_doc_max_bytes` in config.toml now written as a TOML string (`"65536"`) — Codex CLI rejects bare integers for this key.
+
 ## [1.5.0] - 2026-02-18
 
 ### Added
