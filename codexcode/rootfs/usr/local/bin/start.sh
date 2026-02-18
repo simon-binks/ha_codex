@@ -102,7 +102,9 @@ chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"
   # Preserve any existing non-MCP config lines (model, approval_policy, etc.)
   if [ -f "${CONFIG_TOML}" ]; then
     # Strip old mcp_servers sections — we regenerate them below
+    # Fix project_doc_max_bytes: must be a quoted string, not a bare integer
     sed '/^\[mcp_servers\./,/^$/d; /^\[mcp_servers\]/d' "${CONFIG_TOML}" \
+      | sed 's/^project_doc_max_bytes = [0-9][0-9]*/project_doc_max_bytes = "65536"/' \
       | sed '/^$/N;/^\n$/d'  # collapse double blank lines
   fi
 

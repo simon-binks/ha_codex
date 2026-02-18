@@ -2,6 +2,11 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.2] - 2026-02-18
+
+### Fixed
+- Existing `config.toml` with bare-integer `project_doc_max_bytes` is now corrected on every startup via sed — fixes persistent TOML parse error on devices that ran v1.5.0.
+
 ## [1.5.1] - 2026-02-18
 
 ### Fixed
