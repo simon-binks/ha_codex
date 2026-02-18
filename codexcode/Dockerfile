@@ -131,9 +131,10 @@ RUN echo 'source ~/.bashrc' > /root/.profile
 # Set up PATH
 ENV PATH="/root/.local/bin:${PATH}"
 
-# Add startup script
+# Add startup script and HA reference context
 COPY rootfs/usr/local/bin/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
+COPY rootfs/usr/local/share/AGENTS.md /usr/local/share/ha-reference.md
 
 # Set working directory
 WORKDIR /homeassistant

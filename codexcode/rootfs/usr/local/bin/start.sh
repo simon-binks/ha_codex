@@ -9,90 +9,21 @@ CONFIG_TOML="${PERSIST_DIR}/config.toml"
 mkdir -p "${PERSIST_DIR}" /root/.config
 
 # ---------------------------------------------------------------------------
-# Generate guidance docs
+# Deploy HA context for Codex CLI auto-discovery (~/.codex/AGENTS.md)
+# This gives Codex comprehensive HA knowledge (automations, templates,
+# services, entities, MQTT, dashboards, debugging patterns, etc.)
 # ---------------------------------------------------------------------------
-cat > "${PERSIST_DIR}/CODEX.md" <<'DOCEOF'
-# Codex Code - Home Assistant Add-on
+cp /usr/local/share/ha-reference.md "${PERSIST_DIR}/AGENTS.md"
+echo "[INFO] Deployed AGENTS.md (HA reference context for Codex)"
 
-## Path Mapping
-
-In this add-on container, paths are mapped differently than HA Core:
-- `/homeassistant` = HA config directory (equivalent to `/config` in HA Core)
-- `/config` may not exist; use `/homeassistant`
-
-When users mention `/config/...`, translate to `/homeassistant/...`.
-
-## Available Paths
-
-| Path | Description | Access |
-|------|-------------|--------|
-| `/homeassistant` | HA configuration | read-write |
-| `/share` | Shared folder | read-write |
-| `/media` | Media files | read-write |
-| `/ssl` | SSL certificates | read-only |
-| `/backup` | Backups | read-only |
-
-## Home Assistant Integration
-
-Use `hass-mcp` and your client MCP configuration for Home Assistant integration.
-For better performance, prefer domain-focused queries over full entity dumps.
-
-## Authentication
-
-If browser login callback fails with `localhost` errors inside ingress/container networking, use:
-`codex-login`
-
-This runs `codex login --device-auth`, which avoids local callback ports.
-
-## Action Reliability
-
-When executing state-changing actions (turn on/off, set temperature, etc):
-1. Call the action tool once.
-2. Immediately read back the target entity state.
-3. Treat the operation as successful if the readback matches the requested state.
-
-Some MCP action calls may return strict schema/validation errors in Codex even when Home Assistant has already applied the change.
-
-## Reading Home Assistant Logs
-
-```bash
-# View recent logs (ha CLI)
-ha core logs 2>&1 | tail -100
-
-# Filter by keyword
-ha core logs 2>&1 | grep -i keyword
-
-# Filter errors only
-ha core logs 2>&1 | grep -iE "(error|exception)"
-
-# Alternative: read log file directly
-tail -100 /homeassistant/home-assistant.log
-```
-DOCEOF
-
-cat > "${PERSIST_DIR}/HA_TUNING.md" <<'DOCEOF'
-# Home Assistant Tuning for Codex
-
-Use these rules to improve speed and reliability:
-
-1. Avoid full entity dumps (`hass://entities`) unless explicitly requested.
-2. Prefer targeted queries:
-   - domain summary and search first
-   - specific entity readbacks for verification
-3. For state-changing actions:
-   - perform one action call
-   - immediately read back entity state
-   - report observed state as source of truth
-4. If a tool returns validation/type errors after an action, still verify entity state before reporting failure.
-5. Use domain-scoped requests (`light`, `switch`, `climate`) to keep responses small and fast.
-DOCEOF
-
+# Session prompt for the codex-ha alias (not auto-discovered — used explicitly)
 cat > "${PERSIST_DIR}/SESSION_PROMPT.txt" <<'DOCEOF'
-Read `/homeassistant/.codexcode/CODEX.md` and `/homeassistant/.codexcode/HA_TUNING.md` first.
-Then use Home Assistant MCP with these priorities:
+You have a comprehensive Home Assistant reference loaded via AGENTS.md.
+Use Home Assistant MCP with these priorities:
 - Avoid full entity dumps unless explicitly asked.
 - Prefer targeted domain/entity queries.
 - For actions, always verify final entity state and report success/failure from readback state.
+- Refer to your AGENTS.md context for YAML syntax, service calls, templates, and automation patterns.
 DOCEOF
 
 # ---------------------------------------------------------------------------
@@ -173,6 +104,11 @@ chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"
     # Strip old mcp_servers sections — we regenerate them below
     sed '/^\[mcp_servers\./,/^$/d; /^\[mcp_servers\]/d' "${CONFIG_TOML}" \
       | sed '/^$/N;/^\n$/d'  # collapse double blank lines
+  fi
+
+  # Ensure project_doc_max_bytes is set (AGENTS.md is ~60KB, default limit is 32KB)
+  if ! grep -q 'project_doc_max_bytes' "${CONFIG_TOML}" 2>/dev/null; then
+    echo 'project_doc_max_bytes = 65536'
   fi
 
   echo ""

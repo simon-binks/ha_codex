@@ -2,6 +2,16 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.0] - 2026-02-18
+
+### Added
+- Comprehensive Home Assistant reference context (~60KB `AGENTS.md`) auto-loaded by Codex CLI. Covers: file structure, configuration.yaml, entity naming, all automation trigger/condition/action types, full service call reference by domain, Jinja2 template syntax, scenes, input helpers, template sensors, dashboard/Lovelace cards, MQTT patterns, Zigbee2MQTT entity conventions, ESPHome patterns, blueprints, shell/REST commands, and debugging patterns.
+- `project_doc_max_bytes = 65536` added to config.toml to accommodate the full reference.
+
+### Changed
+- Replaced runtime-generated `CODEX.md` and `HA_TUNING.md` with a single baked-in `AGENTS.md` deployed from the container image — faster startup, richer content.
+- Updated `SESSION_PROMPT.txt` to reference `AGENTS.md` context.
+
 ## [1.4.0] - 2026-02-16
 
 ### Changed
