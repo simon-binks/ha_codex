@@ -7,58 +7,82 @@ in HA Core documentation).
 
 ---
 
-## 0. MCP Tool Usage — CRITICAL
+## 0. MCP Tool Usage — READ THIS FIRST
 
-You have Home Assistant MCP tools available. Some have known bugs. Follow these rules:
+You have Home Assistant MCP tools available. Some have bugs. Follow these rules strictly.
 
-### Tools that WORK reliably (use these freely)
-- `search_entities_tool` — search entities by name/query
-- `get_entity` — get state and attributes of a specific entity
-- `list_entities` — list entities with optional domain filter
-- `domain_summary_tool` — summarize all entities in a domain
-- `system_overview` — full HA system overview
-- `list_automations` — list all automations
-- `get_history` — get entity state history
-- `get_error_log` — get HA error log
-- `get_version` — get HA version
+### Working MCP tools (use freely)
+| Tool | Parameters | Notes |
+|------|-----------|-------|
+| `search_entities_tool` | `query` (str), `limit` (int, default 20) | |
+| `get_entity` | `entity_id` (str), `fields` (list), `detailed` (bool) | **`fields` MUST be a list**: `["state"]` not `"state"` |
+| `list_entities` | `domain` (str?), `search_query` (str?), `limit` (int), `fields` (list?), `detailed` (bool) | |
+| `domain_summary_tool` | `domain` (str) | |
+| `system_overview` | none | |
+| `list_automations` | none | |
+| `get_history` | `entity_id` (str), `hours` (int, default 24) | |
+| `get_error_log` | none | |
+| `get_version` | none | |
 
-### Tools that are BROKEN (do NOT use)
-- **`entity_action`** — returns wrong type, causes "Unexpected response type" error
-- **`call_service_tool`** — returns wrong type, causes "dict_type validation error"
+### BROKEN MCP tools — DO NOT USE
+- **`entity_action`** — always errors with "Unexpected response type"
+- **`call_service_tool`** — always errors with "dict_type validation error"
 
-These two tools fail due to an upstream return-type bug in hass-mcp v0.1.1.
-The action may actually succeed on the HA side even though the tool reports an error.
+Both have an upstream return-type bug. The action may execute on HA despite the error, but you cannot confirm success. Never use these tools.
 
-### How to control HA devices instead
+### How to CONTROL devices (turn on/off, call services)
 
-**Option A: Use the `ha` CLI (preferred for simple actions)**
+Use `curl` via exec_command to call the HA REST API. The `ha` CLI does NOT support `service call` inside this container.
+
+**Service call template (copy this exactly):**
 ```bash
-# Turn on/off/toggle
-ha service call switch.turn_on --data '{"entity_id": "switch.example"}'
-ha service call light.turn_on --data '{"entity_id": "light.example", "brightness": 255}'
-ha service call climate.set_temperature --data '{"entity_id": "climate.example", "temperature": 22}'
-
-# Any service call
-ha service call <domain>.<service> --data '{"entity_id": "...", ...}'
+curl -s -X POST http://supervisor/core/api/services/DOMAIN/SERVICE \
+  -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"entity_id": "DOMAIN.ENTITY_NAME"}'
 ```
 
-**Option B: Use curl to the REST API**
+**Common examples:**
 ```bash
 # Turn on a switch
 curl -s -X POST http://supervisor/core/api/services/switch/turn_on \
   -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
   -H "Content-Type: application/json" \
+  -d '{"entity_id": "switch.office_fire_2"}'
+
+# Turn off a light
+curl -s -X POST http://supervisor/core/api/services/light/turn_off \
+  -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"entity_id": "light.living_room"}'
+
+# Set light brightness
+curl -s -X POST http://supervisor/core/api/services/light/turn_on \
+  -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"entity_id": "light.living_room", "brightness": 128}'
+
+# Set climate temperature
+curl -s -X POST http://supervisor/core/api/services/climate/set_temperature \
+  -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"entity_id": "climate.thermostat", "temperature": 22}'
+
+# Toggle any entity
+curl -s -X POST http://supervisor/core/api/services/homeassistant/toggle \
+  -H "Authorization: Bearer ${SUPERVISOR_TOKEN}" \
+  -H "Content-Type: application/json" \
   -d '{"entity_id": "switch.example"}'
 
-# Get entity state
-curl -s http://supervisor/core/api/states/switch.example \
+# Get entity state via REST (alternative to get_entity MCP tool)
+curl -s http://supervisor/core/api/states/switch.office_fire_2 \
   -H "Authorization: Bearer ${SUPERVISOR_TOKEN}"
 ```
 
-### Recommended workflow for actions
-1. Use MCP `search_entities_tool` or `get_entity` to find/verify the entity
-2. Use `ha service call` or `curl` to perform the action
-3. Use MCP `get_entity` to verify the state changed
+### Standard workflow for ANY device action
+1. `search_entities_tool` — find the entity_id
+2. `curl` — call the service (use the template above)
+3. `get_entity` with `fields: ["state"]` — confirm the state changed
 
 ---
 

@@ -2,6 +2,15 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.4] - 2026-02-19
+
+### Fixed
+- Removed `ha service call` workaround from AGENTS.md — `ha` CLI inside the addon does not support `service` subcommand.
+- `curl` to HA REST API is now the only documented action method, with copy-paste templates.
+- Documented `get_entity` `fields` parameter must be a list (`["state"]` not `"state"`).
+- Added parameter table for all working MCP tools with types and gotchas.
+- Added explicit 3-step workflow: search → curl → verify.
+
 ## [1.5.3] - 2026-02-19
 
 ### Added
