@@ -81,20 +81,35 @@ fi
 # This replaces the old approach of shelling out to `codex mcp add/remove`
 # which spawned multiple Node.js processes and was slow + fragile.
 #
-# The hass-mcp launcher reads SUPERVISOR_TOKEN at runtime so the token
-# is always fresh (fixes stale-token 500 errors after addon restarts).
+# The HA MCP launcher reads SUPERVISOR_TOKEN at runtime so the token
+# is always fresh (fixes stale-token errors after addon restarts).
 # ---------------------------------------------------------------------------
 MCP_HA_CWD="${PERSIST_DIR}/mcp/homeassistant"
 mkdir -p "${MCP_HA_CWD}"
 
 # Launcher script — reads SUPERVISOR_TOKEN at runtime, never bakes it in
-cat > "${MCP_HA_CWD}/hass-mcp-launcher.sh" <<'LAUNCHEREOF'
+# and prefers Home Assistant MCP implementations that expose HassTurnOn/HassTurnOff.
+cat > "${MCP_HA_CWD}/ha-mcp-launcher.sh" <<'LAUNCHEREOF'
 #!/usr/bin/env bash
 export HA_URL="http://supervisor/core"
 export HA_TOKEN="${SUPERVISOR_TOKEN}"
-exec hass-mcp
+
+# Prefer newer HA MCP servers first (tool families like HassTurnOn/HassTurnOff),
+# then fall back to hass-mcp for compatibility.
+if command -v homeassistant-mcp >/dev/null 2>&1; then
+  exec homeassistant-mcp
+elif command -v home-assistant-mcp >/dev/null 2>&1; then
+  exec home-assistant-mcp
+elif command -v ha-mcp >/dev/null 2>&1; then
+  exec ha-mcp
+elif command -v hass-mcp >/dev/null 2>&1; then
+  exec hass-mcp
+else
+  echo "[ERROR] No Home Assistant MCP server binary found (tried: homeassistant-mcp, home-assistant-mcp, ha-mcp, hass-mcp)" >&2
+  exit 127
+fi
 LAUNCHEREOF
-chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"
+chmod 700 "${MCP_HA_CWD}/ha-mcp-launcher.sh"
 
 # Build config.toml — preserve auth.json and any user customisations
 # by merging MCP sections on top of existing config
@@ -119,7 +134,7 @@ chmod 700 "${MCP_HA_CWD}/hass-mcp-launcher.sh"
     cat <<MCPEOF
 
 [mcp_servers.homeassistant]
-command = "${MCP_HA_CWD}/hass-mcp-launcher.sh"
+command = "${MCP_HA_CWD}/ha-mcp-launcher.sh"
 args = []
 startup_timeout_sec = 15.0
 tool_timeout_sec = 30.0

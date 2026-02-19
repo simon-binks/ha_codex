@@ -2,6 +2,13 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.8] - 2026-02-19
+
+### Changed
+- Updated Home Assistant MCP launcher to prefer newer HA MCP binaries that expose `HassTurnOn`/`HassTurnOff`, with compatibility fallback to `hass-mcp`.
+- Renamed launcher script wiring to `ha-mcp-launcher.sh` and updated generated Codex MCP config to use it.
+- Updated `AGENTS.md` action guidance to explicitly prioritize `HassTurnOn`/`HassTurnOff` when available.
+
 ## [1.5.7] - 2026-02-19
 
 ### Changed
