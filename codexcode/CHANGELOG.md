@@ -2,6 +2,13 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.6] - 2026-02-19
+
+### Changed
+- Refined and de-duplicated `AGENTS.md` to keep MCP-first Home Assistant workflows while reducing prompt bloat.
+- Reworked MCP guidance into a clear discover -> act -> verify flow with explicit ambiguous-result handling.
+- Trimmed repetitive reference sections (services, Lovelace cards, triggers/conditions, MQTT/Zigbee2MQTT/ESPHome/Blueprint selectors) while retaining core HA configuration knowledge.
+
 ## [1.5.5] - 2026-02-19
 
 ### Changed
