@@ -22,6 +22,9 @@ You have Home Assistant MCP tools. Use MCP as the primary interaction layer for 
 8. For Home Assistant action tools, do not send empty optional slots. Omit unset fields entirely (avoid `[]`, `""`, `null` placeholders).
 9. For `HassTurnOn`/`HassTurnOff`, prefer minimal valid arguments first (often `name` only), then add `area`/`floor`/`domain` only if disambiguation is needed.
 10. If `HassTurnOn`/`HassTurnOff` tool family is available, prefer it over legacy `entity_action`/`call_service_tool`.
+11. Performance default: do not run multiple discovery calls when the first call returns a unique actionable target.
+12. Use smallest useful query limits (`search_entities_tool` limit ~5-20). Avoid wide scans (`limit: 100`) unless explicitly needed.
+13. Keep response text brief for routine actions: one line outcome + verified state.
 
 ### MCP tool reference
 | Tool | Parameters | Notes |
@@ -53,7 +56,8 @@ You have Home Assistant MCP tools. Use MCP as the primary interaction layer for 
 
 ### Practical playbooks
 1. Toggle device
-   - Discover entity -> act (`call_service_tool` or `entity_action`) -> verify state.
+   - Fast path: single `search_entities_tool` -> act -> single `get_entity` verify.
+   - Only use `list_entities` or additional search if the first match is ambiguous.
 2. Set a value (brightness/temperature/mode)
    - Discover entity -> call specific service with `data` -> verify changed state/attributes.
 3. Debug "automation didn't run"

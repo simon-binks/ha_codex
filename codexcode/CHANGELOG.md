@@ -2,6 +2,13 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.9] - 2026-02-19
+
+### Changed
+- Added MCP action fast-path guidance in `AGENTS.md` to reduce latency for routine control requests.
+- Instructed single-discovery default (`search -> act -> verify`) and to avoid extra entity scans unless the first result is ambiguous.
+- Added query-size guidance to avoid broad `limit: 100` discovery calls for simple on/off commands.
+
 ## [1.5.8] - 2026-02-19
 
 ### Changed
