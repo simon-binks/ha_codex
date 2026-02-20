@@ -2,6 +2,11 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.16] - 2026-02-20
+
+### Changed
+- Updated add-on branding assets: replaced `logo.png` and `icon.png` with Codex-branded imagery.
+
 ## [1.5.15] - 2026-02-20
 
 ### Changed
