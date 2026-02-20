@@ -2,6 +2,11 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.17] - 2026-02-20
+
+### Changed
+- Replaced `logo.png` and `icon.png` with the official Codex desktop app icon asset.
+
 ## [1.5.16] - 2026-02-20
 
 ### Changed
