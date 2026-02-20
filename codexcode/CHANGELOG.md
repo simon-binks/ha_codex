@@ -2,6 +2,14 @@
 
 All notable changes to this add-on are documented here.
 
+## [1.5.14] - 2026-02-20
+
+### Changed
+- Reduced routine HA action overhead by treating successful Hass* action responses as sufficient verification for simple on/off commands.
+- Instructed agents to avoid `GetLiveContext` for routine single-device toggles unless action output is ambiguous or deeper validation is explicitly requested.
+- Added explicit rule to skip MCP capability inventory calls (`list_mcp_resources`, tool catalog checks) unless the user asks for MCP inspection.
+- Updated startup session prompt to favor one-call Hass* control flow and suppress unnecessary preflight checks.
+
 ## [1.5.13] - 2026-02-20
 
 ### Changed

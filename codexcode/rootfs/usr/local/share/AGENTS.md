@@ -18,10 +18,10 @@ This add-on provides two HA MCP servers:
 1. Prefer targeted queries (`domain`, `entity_id`, search terms). Avoid full dumps unless requested.
 2. For simple control requests, use `homeassistant` (HTTP/Hass*) action tools first, then verify.
 3. For state-changing actions, always follow: discover (if needed) -> act -> verify.
-4. Verification is mandatory. Report success only from verified post-action state.
+4. Verification is mandatory, but for Hass* action tools a structured success payload counts as verification for routine controls.
 5. If result is ambiguous, retry once, then stop and surface exact error + current state.
 6. Performance default: do not run multiple discovery calls when the first call returns a unique actionable target.
-7. Use minimal discovery (`GetLiveContext` once, then act). Avoid repeated broad scans unless needed.
+7. Avoid broad discovery/verification by default. Do not call `GetLiveContext` for routine single-device actions unless action output is ambiguous or the user explicitly asks for deeper validation.
 8. Keep routine action responses brief: one line outcome + verified state.
 9. For Home Assistant action tools, do not send empty optional slots. Omit unset fields entirely (avoid `[]`, `""`, `null` placeholders).
 10. For `HassTurnOn`/`HassTurnOff`, start with minimal args (`name` only) and add `area`/`floor`/`domain` only for disambiguation.
@@ -34,6 +34,8 @@ This add-on provides two HA MCP servers:
    - Do not run `list_entities` or extra searches unless the first search is ambiguous.
 14. Cache resolved entity targets in-session and reuse them to avoid repeated discovery.
 15. Do not mix both MCP servers in the same routine command unless primary is missing a required capability.
+16. Do not run MCP inventory checks (`list_mcp_resources`, `list_mcp_resource_templates`, tool cataloging) unless the user explicitly asks to inspect MCP capabilities.
+17. For routine `HassTurnOn`/`HassTurnOff`: do a single action call and return concise outcome from tool result; only add extra readback on ambiguity/failure.
 
 ### MCP tool reference
 | Tool | When to use | Notes |

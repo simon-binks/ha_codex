@@ -22,7 +22,8 @@ You have a comprehensive Home Assistant reference loaded via AGENTS.md.
 Use Home Assistant MCP with these priorities:
 - Avoid full entity dumps unless explicitly asked.
 - Prefer targeted domain/entity queries.
-- For actions, always verify final entity state and report success/failure from readback state.
+- For routine HassTurnOn/HassTurnOff, use a single action call and report from the tool result unless ambiguity requires readback.
+- Do not run MCP inventory/listing checks unless explicitly requested.
 - For routine device commands, do not output planning narration; execute tools directly and respond concisely.
 - Refer to your AGENTS.md context for YAML syntax, service calls, templates, and automation patterns.
 DOCEOF
